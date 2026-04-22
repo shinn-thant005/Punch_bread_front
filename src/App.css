@@ -1,0 +1,258 @@
+/* src/App.css */
+
+.app-container {
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* 1. THE MAIN STAGE 
+   We use flex-direction: column-reverse to stack the image at the bottom 
+   and the messages/clouds naturally on top of it.
+*/
+.character-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse; /* Stacks items from bottom to top */
+  align-items: center;
+  justify-content: center;
+  min-height: 500px; /* Ensures space for the floating clouds */
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+/* 2. THE CHARACTER IMAGE */
+.main-character-wrapper {
+  z-index: 1;
+  margin-top: 10px;
+}
+
+.main-character {
+  width: 320px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  display: block;
+}
+
+/* 3. RANDOM MESSAGE CLOUD 
+   Positioned naturally above the character image.
+*/
+.random-message-cloud {
+  background: white;
+  padding: 15px 25px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 2px solid #e0e0e0;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 330px; /* Space between cloud and image */
+  max-width: 280px;
+  position: absolute;
+  z-index: 5;
+}
+
+/* Cloud "tail" pointing down to the character */
+.random-message-cloud::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: white transparent transparent;
+}
+
+/* 4. ADMIN FLOATING BOX 
+   This appears when you send a manual response from Postman.
+*/
+.admin-floating-box {
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  border: 2px solid #ff85a2;
+  width: 240px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.admin-floating-box img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.speech-bubble {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* 5. CLOSE BUTTON (X) */
+.close-overlay {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: #ff4d4d;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.close-overlay:hover {
+  background: #e60000;
+}
+
+/* 6. ACTION BUTTONS */
+.actions {
+  margin-top: 30px;
+}
+
+button.punch-btn, button.kiss-btn {
+  padding: 15px 35px;
+  margin: 0 15px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.punch-btn {
+  background-color: #ff4d4d;
+  box-shadow: 0 4px #cc0000;
+}
+
+.kiss-btn {
+  background-color: #ff85a2;
+  box-shadow: 0 4px #f55a84;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px #999;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Container for the mood button to sit in the top right */
+.mood-selector-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.mood-icon-btn {
+  background: white;
+  border: 2px solid #ff85a2;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Dropdown styling */
+.mood-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 120px;
+}
+
+.mood-dropdown button {
+  background: none;
+  color: #444;
+  padding: 8px;
+  margin: 2px 0;
+  font-size: 14px;
+  text-align: left;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.mood-dropdown button:hover {
+  background-color: #fff0f3;
+  color: #ff85a2;
+}
+
+.mood-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  width: 180px; /* Widened to fit input */
+}
+
+.mood-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  font-size: 13px;
+  box-sizing: border-box; /* Ensures padding doesn't break width */
+}
+
+.mood-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for moods */
+  gap: 5px;
+}
+
+.mood-dropdown button {
+  background: #f9f9f9;
+  border: none;
+  padding: 6px;
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.mood-dropdown button:hover {
+  background: #ff85a2;
+  color: white;
+}
