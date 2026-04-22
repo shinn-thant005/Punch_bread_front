@@ -79,6 +79,32 @@ function App() {
     } catch (err) { console.error(err); }
   };
 
+  // ... inside App component ...
+
+  const handleMadClick = async () => {
+    try {
+      await api.post('/add-mood', { 
+        mood: "MAD",
+        reasonMessage: "Su Su is being mad at you" 
+      }); 
+      alert(`Message sent: I'm mad!`);
+    } catch (err) {
+      console.error("Error recording MAD mood:", err);
+    }
+  };
+
+  const handleMissingClick = async () => {
+    try {
+      await api.post('/add-mood', { 
+        mood: "MISSING",
+        reasonMessage: "Su Su is missing you" 
+      }); 
+      alert(`Message sent: I miss you!`);
+    } catch (err) {
+      console.error("Error recording MISSING mood:", err);
+    }
+  };
+
   return (
     <div className="app-container">
       <div className="mood-selector-container">
@@ -130,6 +156,10 @@ function App() {
       <div className="actions">
         <button className="punch-btn" onClick={handlePunch}>PUNCH</button>
         <button className="kiss-btn" onClick={handleKiss}>KISS</button>
+        
+        {/* New MAD and MISSING buttons */}
+        <button className="mad-btn" onClick={handleMadClick}>MAD 😤</button>
+        <button className="missing-btn" onClick={handleMissingClick}>MISSING 🥺</button>
       </div>
     </div>
   );
