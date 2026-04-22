@@ -6,6 +6,7 @@
   padding: 20px;
   background-color: #f9f9f9;
   min-height: 100vh;
+  position: relative; /* Required for the absolute positioning below */
 }
 
 h1 {
@@ -13,161 +14,19 @@ h1 {
   margin-bottom: 30px;
 }
 
-/* 1. THE MAIN STAGE 
-   We use flex-direction: column-reverse to stack the image at the bottom 
-   and the messages/clouds naturally on top of it.
-*/
-.character-stage {
-  position: relative;
-  display: flex;
-  flex-direction: column-reverse; /* Stacks items from bottom to top */
-  align-items: center;
-  justify-content: center;
-  min-height: 500px; /* Ensures space for the floating clouds */
-  margin: 0 auto;
-  max-width: 500px;
-}
-
-/* 2. THE CHARACTER IMAGE */
-.main-character-wrapper {
-  z-index: 1;
-  margin-top: 10px;
-}
-
-.main-character {
-  width: 320px;
-  height: auto;
-  border-radius: 20px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  display: block;
-}
-
-/* 3. RANDOM MESSAGE CLOUD 
-   Positioned naturally above the character image.
-*/
-.random-message-cloud {
-  background: white;
-  padding: 15px 25px;
-  border-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  border: 2px solid #e0e0e0;
-  font-weight: 600;
-  color: #444;
-  margin-bottom: 330px; /* Space between cloud and image */
-  max-width: 280px;
-  position: absolute;
-  z-index: 5;
-}
-
-/* Cloud "tail" pointing down to the character */
-.random-message-cloud::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 10px 10px 0;
-  border-style: solid;
-  border-color: white transparent transparent;
-}
-
-/* 4. ADMIN FLOATING BOX 
-   This appears when you send a manual response from Postman.
-*/
-.admin-floating-box {
-  background: white;
-  padding: 15px;
-  border-radius: 15px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-  border: 2px solid #ff85a2;
-  width: 240px;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 10;
-}
-
-.admin-floating-box img {
-  width: 100%;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.speech-bubble {
-  font-size: 15px;
-  color: #333;
-  line-height: 1.4;
-  font-style: italic;
-}
-
-/* 5. CLOSE BUTTON (X) */
-.close-overlay {
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  background: #ff4d4d;
-  color: white;
-  border: 2px solid white;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.close-overlay:hover {
-  background: #e60000;
-}
-
-/* 6. ACTION BUTTONS */
-.actions {
-  margin-top: 30px;
-}
-
-button.punch-btn, button.kiss-btn {
-  padding: 15px 35px;
-  margin: 0 15px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  border-radius: 12px;
-  color: white;
-  transition: transform 0.1s, opacity 0.2s;
-}
-
-.punch-btn {
-  background-color: #ff4d4d;
-  box-shadow: 0 4px #cc0000;
-}
-
-.kiss-btn {
-  background-color: #ff85a2;
-  box-shadow: 0 4px #f55a84;
-}
-
-button:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px #999;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-/* Container for the mood button to sit in the top right */
+/* 1. MOOD SELECTOR CONTAINER (TOP RIGHT) */
 .mood-selector-container {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 100;
+  display: flex;
+  flex-direction: column; /* This stacks everything vertically */
+  align-items: center;    /* Keeps them centered in a line */
+  gap: 10px;              /* Space between buttons */
 }
 
+/* Circle Style for Emoji Button */
 .mood-icon-btn {
   background: white;
   border: 2px solid #ff85a2;
@@ -180,88 +39,119 @@ button:hover {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.1s;
 }
 
-/* Dropdown styling */
+/* Capsule Style for MAD and MISSING */
+.mad-btn, .missing-btn {
+  border: none;
+  border-radius: 50px; /* Makes it a capsule */
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  min-width: 90px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.mad-btn {
+  background-color: #d32f2f;
+}
+
+.missing-btn {
+  background-color: #9c27b0;
+}
+
+.mad-btn:hover, .missing-btn:hover, .mood-icon-btn:hover, .punch-btn:hover, .kiss-btn:hover, .history-trigger-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* 2. THE MAIN STAGE */
+.character-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.main-character {
+  width: 320px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  display: block;
+}
+
+/* 8. IMPROVED DROPDOWN STYLING */
 .mood-dropdown {
   position: absolute;
-  top: 60px;
+  top: 60px; /* Aligned with the bottom of the mood-icon-btn */
   right: 0;
   background: white;
   border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 16px; /* Smoother corners */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  width: 120px;
-}
-
-.mood-dropdown button {
-  background: none;
-  color: #444;
-  padding: 8px;
-  margin: 2px 0;
-  font-size: 14px;
-  text-align: left;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.mood-dropdown button:hover {
-  background-color: #fff0f3;
-  color: #ff85a2;
-}
-
-.mood-dropdown {
-  position: absolute;
-  top: 60px;
-  right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  width: 180px; /* Widened to fit input */
+  padding: 18px; /* Increased padding for better breathing room */
+  width: 220px; /* Slightly wider to prevent cramping */
+  z-index: 110;
 }
 
 .mood-input {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  font-size: 13px;
-  box-sizing: border-box; /* Ensures padding doesn't break width */
+  padding: 10px;
+  margin-bottom: 15px; /* More space between input and buttons */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.mood-input:focus {
+  border-color: #ff85a2;
 }
 
 .mood-options {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two columns for moods */
-  gap: 5px;
+  grid-template-columns: 1fr 1fr; /* Two clean columns */
+  gap: 10px; /* Better spacing between buttons */
 }
 
-.mood-dropdown button {
-  background: #f9f9f9;
-  border: none;
-  padding: 6px;
-  font-size: 11px;
-  border-radius: 4px;
+.mood-options button {
+  background: #fdfdfd;
+  border: 1px solid #f0f0f0;
+  padding: 10px 5px; /* Taller buttons for easier clicking */
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-.mood-dropdown button:hover {
-  background: #ff85a2;
-  color: white;
+.mood-options button:hover {
+  background: #fff0f3;
+  color: #ff85a2;
+  border-color: #ff85a2;
+  transform: translateY(-1px);
 }
 
-/* Add these to src/App.css */
+/* 4. ACTION BUTTONS (PUNCH/KISS) */
+.actions {
+  margin-top: 30px;
+}
 
-.mad-btn {
-  background-color: #d32f2f; /* Darker red for MAD */
-  box-shadow: 0 4px #a12323;
+.punch-btn, .kiss-btn {
   padding: 15px 35px;
   margin: 0 15px;
   font-size: 18px;
@@ -270,29 +160,110 @@ button:hover {
   border: none;
   border-radius: 12px;
   color: white;
-  transition: transform 0.1s, opacity 0.2s;
+  transition: transform 0.1s;
 }
 
-.missing-btn {
-  background-color: #9c27b0; /* Purple for MISSING */
-  box-shadow: 0 4px #7b1fa2;
-  padding: 15px 35px;
-  margin: 0 15px;
-  font-size: 18px;
+.punch-btn {
+  background-color: #ff4d4d;
+  box-shadow: 0 4px #cc0000;
+}
+
+.kiss-btn {
+  background-color: #ff85a2;
+  box-shadow: 0 4px #f55a84;
+}
+
+/* Speech bubbles and other utilities */
+.random-message-cloud {
+  background: white;
+  padding: 15px 25px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 2px solid #e0e0e0;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 330px;
+  max-width: 280px;
+  position: absolute;
+  z-index: 5;
+}
+
+/* History Trigger Button */
+.history-trigger-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  background: white;
+  border: 2px solid #36A2EB;
+  border-radius: 50px;
   font-weight: bold;
+  color: #36A2EB;
   cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+
+/* Full Page Overlay */
+.history-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.98); /* Nearly solid white */
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.history-content {
+  width: 90%;
+  max-width: 800px;
+  height: 90%;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  padding: 40px;
+  position: relative;
+  overflow-y: auto; /* Scroll if content is too long */
+}
+
+/* Close Button (X) */
+.close-history {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
   border: none;
-  border-radius: 12px;
-  color: white;
-  transition: transform 0.1s, opacity 0.2s;
+  font-size: 40px;
+  cursor: pointer;
+  color: #888;
 }
 
-/* Ensure hover and active states apply to these as well */
-.mad-btn:hover, .missing-btn:hover {
-  opacity: 0.9;
+.history-text-section h2, .history-chart-section h2 {
+  color: #333;
+  margin-bottom: 20px;
 }
 
-.mad-btn:active, .missing-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px #999;
+.history-text-section p {
+  font-size: 20px;
+  margin: 10px 0;
+  color: #555;
+}
+
+.history-text-section strong {
+  color: #ff85a2;
+}
+
+.chart-container {
+  height: 350px;
+  margin-top: 20px;
+}
+
+hr {
+  margin: 40px 0;
+  border: 0;
+  border-top: 1px solid #eee;
 }
