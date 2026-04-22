@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from './api';
 import './App.css';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function App() {
   const [photoIndex, setPhotoIndex] = useState(10); 
@@ -8,10 +12,46 @@ function App() {
   const [showAdmin, setShowAdmin] = useState(false);
   const [randomMessage, setRandomMessage] = useState(""); 
   const [showMoodMenu, setShowMoodMenu] = useState(false);
-  // New state for the text input
   const [reason, setReason] = useState(""); 
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyData, setHistoryData] = useState({ kiss: 0, punch: 0, moodStats: {} });
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
   const moods = ["HAPPY", "SAD", "BORED", "ENERGETIC", "ANXIOUS", "CALM"];
+  const bgMusicRef = useRef(new Audio('/bg-music.mp3'));
+
+  useEffect(() => {
+    const music = bgMusicRef.current;
+    music.loop = true;
+    music.volume = 0.4; // Set to 40% volume so it's not too loud
+
+    return () => {
+      music.pause();
+    };
+  }, []);
+
+  // Toggle Music Function
+  const toggleMusic = () => {
+    if (isMusicPlaying) {
+      bgMusicRef.current.pause();
+    } else {
+      bgMusicRef.current.play().catch(err => console.log("Autoplay blocked:", err));
+    }
+    setIsMusicPlaying(!isMusicPlaying);
+  };
+
+  // Sound Effect Helpers
+  const playPunchSound = () => {
+    const sfx = new Audio('/punch.mp3');
+    sfx.volume = 0.6;
+    sfx.play();
+  };
+
+  const playKissSound = () => {
+    const sfx = new Audio('/kiss.mp3');
+    sfx.volume = 0.6;
+    sfx.play();
+  };
 
   useEffect(() => {
     fetchStatus();
@@ -24,6 +64,35 @@ function App() {
       setShowAdmin(true);
     }
   }, [adminResponse?.responseDate, adminResponse?.responseMessage]);
+
+  const fetchHistory = async () => {
+    try {
+      const [kissRes, punchRes, moodRes] = await Promise.all([
+        api.get('/get-total-kiss-week'),
+        api.get('/get-total-punch-week'),
+        api.get('/stats-30-days')
+      ]);
+      setHistoryData({
+        kiss: kissRes.data,
+        punch: punchRes.data,
+        moodStats: moodRes.data
+      });
+      setShowHistory(true);
+    } catch (err) {
+      console.error("Error fetching history:", err);
+    }
+  };
+
+  // Pie Chart Configuration
+  const pieData = {
+    labels: Object.keys(historyData.moodStats),
+    datasets: [{
+      data: Object.values(historyData.moodStats),
+      backgroundColor: [
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#8BC34A'
+      ],
+    }]
+  };
 
   const fetchStatus = async () => {
     try {
@@ -64,6 +133,7 @@ function App() {
   };
 
   const handlePunch = async () => {
+    playPunchSound();
     try {
       await api.post('/punch');
       fetchStatus();
@@ -72,6 +142,7 @@ function App() {
   };
 
   const handleKiss = async () => {
+    playKissSound();
     try {
       await api.post('/kiss');
       fetchStatus();
@@ -107,10 +178,23 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Top Left Controls */}
+      <div className="top-left-controls">
+        <button className="history-trigger-btn" onClick={fetchHistory}>
+          See Your History
+        </button>
+        <button className={`music-toggle-btn ${isMusicPlaying ? 'playing' : ''}`} onClick={toggleMusic}>
+          {isMusicPlaying ? '🎵 On' : '🔇 Off'}
+        </button>
+      </div>
+
       <div className="mood-selector-container">
         <button className="mood-icon-btn" onClick={() => setShowMoodMenu(!showMoodMenu)}>
           😊
         </button>
+
+        <button className="mad-btn" onClick={handleMadClick}>MAD 😤</button>
+        <button className="missing-btn" onClick={handleMissingClick}>MISSING 🥺</button>
         
         {showMoodMenu && (
           <div className="mood-dropdown">
@@ -153,13 +237,33 @@ function App() {
         </div>
       </div>
 
+      {/* 2. Full-Page History Pop-up */}
+      {showHistory && (
+        <div className="history-overlay">
+          <div className="history-content">
+            <button className="close-history" onClick={() => setShowHistory(false)}>×</button>
+            
+            <section className="history-text-section">
+              <h2>Weekly Interaction Stats</h2>
+              <p>You have punched Shinn Thant <strong>{historyData.punch}</strong> times this week.</p>
+              <p>You have kissed Shinn Thant <strong>{historyData.kiss}</strong> times this week.</p>
+            </section>
+
+            <hr />
+
+            <section className="history-chart-section">
+              <h2>Mood Distribution (Last 30 Days)</h2>
+              <div className="chart-container">
+                <Pie data={pieData} options={{ maintainAspectRatio: false }} />
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
+
       <div className="actions">
         <button className="punch-btn" onClick={handlePunch}>PUNCH</button>
         <button className="kiss-btn" onClick={handleKiss}>KISS</button>
-        
-        {/* New MAD and MISSING buttons */}
-        <button className="mad-btn" onClick={handleMadClick}>MAD 😤</button>
-        <button className="missing-btn" onClick={handleMissingClick}>MISSING 🥺</button>
       </div>
     </div>
   );
