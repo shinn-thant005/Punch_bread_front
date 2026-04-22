@@ -256,3 +256,43 @@ button:hover {
   background: #ff85a2;
   color: white;
 }
+
+/* Add these to src/App.css */
+
+.mad-btn {
+  background-color: #d32f2f; /* Darker red for MAD */
+  box-shadow: 0 4px #a12323;
+  padding: 15px 35px;
+  margin: 0 15px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.missing-btn {
+  background-color: #9c27b0; /* Purple for MISSING */
+  box-shadow: 0 4px #7b1fa2;
+  padding: 15px 35px;
+  margin: 0 15px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+/* Ensure hover and active states apply to these as well */
+.mad-btn:hover, .missing-btn:hover {
+  opacity: 0.9;
+}
+
+.mad-btn:active, .missing-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px #999;
+}
