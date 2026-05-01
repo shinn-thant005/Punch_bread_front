@@ -1,20 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
-import App from './App.jsx'
-import Admin from './Admin.jsx'
+import RootRoutes from './RootRoutes.jsx' // Import the logic you built
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        {/* This is your main game site (App.jsx) */}
-        <Route path="/girlfriend" element={<App />} />
-        
-        {/* This is your new admin module (Admin.jsx) */}
-        <Route path="/admin-7572" element={<Admin />} />
-      </Routes>
-    </BrowserRouter>
+    {/* 
+      RootRoutes already contains a <BrowserRouter>, 
+      so we don't need to add one here.
+    */}
+    <RootRoutes />
   </StrictMode>,
 )
